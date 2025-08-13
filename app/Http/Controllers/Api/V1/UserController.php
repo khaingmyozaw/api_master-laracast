@@ -3,21 +3,19 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Models\User;
+use App\Http\Filters\V1\UserFilter;
 use App\Http\Resources\V1\UserResource;
-use App\Http\Requests\Api\V1\StoreTicketRequest;
 use App\Http\Requests\Api\V1\UpdateUserRequest;
+use App\Http\Requests\Api\V1\StoreTicketRequest;
 
 class UserController extends ApiController
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(UserFilter $filters)
     {
-        if ($this->included('tickets')) {
-            return UserResource::collection(User::with('tickets')->paginate());
-        }
-        return UserResource::collection(User::paginate());
+        return UserResource::collection(User::filter($filters)->paginate());
     }
 
     /**
