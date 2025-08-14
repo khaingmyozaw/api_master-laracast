@@ -7,7 +7,6 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class TicketResource extends JsonResource
 {
-
     // public static $wrap = 'tickets'; // Custimize the key
     /**
      * Transform the resource into an array.
@@ -17,33 +16,33 @@ class TicketResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-                'type' => 'ticket',
-                'id'    => $this->id,
-                'attributes' => [
-                    'title' => $this->title,
-                    'description' => $this->when(
-                        $request->routeIs('tickets.show'),
-                        $this->description
-                    ),
-                    'status' => $this->status,
-                    'createdAt' => $this->created_at,
-                    'updatedAt' => $this->updated_at,
-                ],
-                'relationships' => [
-                    'author' => [
-                        'data' => [
-                            'type' => 'user',
-                            'id'    => $this->user_id,
-                        ],
-                        'links' => [
-                            'self' => route('users.show', ['user' => $this->user_id]),
-                        ],
+            'type' => 'ticket',
+            'id' => $this->id,
+            'attributes' => [
+                'title' => $this->title,
+                'description' => $this->when(
+                    ! $request->routeIs(['tickets.index', 'users.tickets']),
+                    $this->description
+                ),
+                'status' => $this->status,
+                'createdAt' => $this->created_at,
+                'updatedAt' => $this->updated_at,
+            ],
+            'relationships' => [
+                'author' => [
+                    'data' => [
+                        'type' => 'user',
+                        'id' => $this->user_id,
+                    ],
+                    'links' => [
+                        'self' => route('users.show', ['user' => $this->user_id]),
                     ],
                 ],
-                'included' => new UserResource($this->whenLoaded('author')),
-                'links' => [
-                    'self' => route('tickets.show', ['ticket' => $this->id]),
-                ],
-               ];
+            ],
+            'included' => new UserResource($this->whenLoaded('author')),
+            'links' => [
+                'self' => route('tickets.show', ['ticket' => $this->id]),
+            ],
+        ];
     }
 }

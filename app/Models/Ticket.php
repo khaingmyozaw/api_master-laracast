@@ -3,15 +3,19 @@
 namespace App\Models;
 
 use App\Http\Filters\V1\QueryFilter;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Database\Query\Builder;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Ticket extends Model
 {
     /** @use HasFactory<\Database\Factories\TicketFactory> */
     use HasFactory;
+
+    protected $fillable = [
+        'user_id', 'title', 'status', 'description',
+    ];
 
     public function author(): BelongsTo
     {

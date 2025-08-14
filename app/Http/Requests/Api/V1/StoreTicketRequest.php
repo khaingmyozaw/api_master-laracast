@@ -2,16 +2,17 @@
 
 namespace App\Http\Requests\Api\V1;
 
+use App\Traits\ApiResponse;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreTicketRequest extends FormRequest
+class StoreTicketRequest extends BaseTicketRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +23,10 @@ class StoreTicketRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'data.attributes.title' => 'required|string',
+            'data.attributes.status' => 'required|string|in:A,C,H,X',
+            'data.attributes.description' => 'required|string',
+            'data.relationships.author.data.id' => 'required|exists:users,id',
         ];
     }
 }

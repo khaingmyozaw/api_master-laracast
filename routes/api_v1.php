@@ -7,7 +7,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->group(function () {
 
-    Route::apiResource('/tickets', TicketController::class);
+    Route::apiResource('/tickets', TicketController::class)->except(['update']);
+    Route::put('/tickets/{ticket}', [TicketController::class, 'replace']);
+    Route::patch('/tickets/{ticket}', [TicketController::class, 'update']);
+
     Route::apiResource('/users', UserController::class);
     Route::apiResource('users.tickets', AuthorTicketController::class);
 
