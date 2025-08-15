@@ -40,13 +40,18 @@ class UserController extends ApiController
     /**
      * Display the specified resource.
      */
-    public function show(User $user)
+    public function show(int $user_id)
     {
-        if ($this->included('tickets')) {
-            return new UserResource($user->load('tickets'));
+        try {
+            $user = User::findOrFail($user_id);
+            if ($this->included('tickets')) {
+                return new UserResource($user->load('tickets'));
+            }
+    
+            return new UserResource($user);
+        } catch(ModelNotFoundException $exception) {
+            return $this->error('User cannot be found.', 404);
         }
-
-        return new UserResource($user);
     }
 
     /**
@@ -80,8 +85,15 @@ class UserController extends ApiController
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(User $user)
+    public function destroy(int $user_id)
     {
-        //
+        try {
+            $user = User::findOrFail($user_id);
+            $user->delete();
+
+            return $this->ok('User is successfully deleted.', []);
+        } catch (ModelNotFoundException $exception) {
+            return $this->error('User cannot be found.', 404);
+        }
     }
 }
